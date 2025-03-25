@@ -58,10 +58,10 @@ def get_volume():
         volume = re.search(r"\[(\d+)%\]", output).group(1)
         muted = "[off]" in output
         if muted:
-            return "󰕾 muted"
-        return f"󰕾 {volume}%"
+            return "  muted"
+        return f"  {volume}%"
     except:
-        return "󰕾 N/A"
+        return "  N/A"
 
 def get_keyboard_layout():
     """
@@ -79,14 +79,14 @@ def get_memory():
     Get memory usage using psutil.
     """
     memory = psutil.virtual_memory()
-    return f" {memory.percent}%"
+    return f"  {memory.percent}%"
 
 def get_cpu():
     """
     Get CPU usage using psutil.
     """
     cpu_usage = psutil.cpu_percent(interval=1)
-    return f" {cpu_usage}%"
+    return f"󰻠 {cpu_usage}%"
 
 def get_date_time():
     """
@@ -95,7 +95,7 @@ def get_date_time():
     now = datetime.datetime.now()
     date_str = now.strftime("%a %b %d")  # e.g., "Mon Mar 18"
     time_str = now.strftime("%H:%M:%S")  # e.g., "16:43:00"
-    return f"  {date_str}   {time_str}"
+    return f"󰥔 {time_str}   {date_str} "
 
 def get_battery():
     """
@@ -106,29 +106,26 @@ def get_battery():
         if battery:
             percent = battery.percent
             if battery.power_plugged:
-                return f" Charging {percent}%"
+                return f"󰂅 {percent}%"
             else:
-                return f" {percent}%"
+                return f"󰁹 {percent}%"
         else:
-            return " N/A"
+            return "󰁹 N/A"
     except:
-        return " N/A"
+        return "󰁹 N/A"
 
 def update_status():
     """
     Gather all status information and update the DWM status bar using xsetroot.
     """
     status_parts = [
-        get_dwm_tags(),
-        get_active_window(),
-        get_volume(),
-        get_keyboard_layout(),
         get_memory(),
         get_cpu(),
-        get_date_time(),
         get_battery(),
+        get_volume(),
+        get_date_time()
     ]
-    status = " | ".join(status_parts)
+    status = "  ".join(status_parts)
     subprocess.run(["xsetroot", "-name", status])
 
 def main():
