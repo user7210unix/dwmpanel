@@ -204,9 +204,7 @@ clone_repository() {
     if ! git clone "$REPO_URL" "$CLONE_DIR"; then
         print_msg "Failed to clone the repository!" "${RED}"
         exit 1
-    fi
-
-    print_msg "Repository cloned successfully to $CLONE_DIR." "${GREEN}"
+    fi    print_msg "Repository cloned successfully to $CLONE_DIR." "${GREEN}"
 }
 
 # Function to set executable permissions
@@ -226,26 +224,36 @@ set_permissions() {
     print_msg "Permissions set successfully." "${GREEN}"
 }
 
-# Function to copy dwmpanel to /usr/bin/
+# Function to copy dwmpanel binary to /usr/bin/
 copy_to_usr_bin() {
     CLONE_DIR="$HOME/.dwmpanel"
-    DEST_DIR="/usr/bin/dwmpanel"
+    DEST_FILE="/usr/bin/dwmpanel"
+    SOURCE_FILE="$CLONE_DIR/dwmpanel"
 
-    print_msg "Copying dwmpanel to $DEST_DIR..." "${YELLOW}"
+    print_msg "Copying dwmpanel binary to $DEST_FILE..." "${YELLOW}"
 
-    # Remove the destination directory if it already exists
-    if [ -d "$DEST_DIR" ]; then
-        print_msg "Removing existing directory $DEST_DIR..." "${YELLOW}"
-        sudo rm -rf "$DEST_DIR"
-    fi
-
-    # Copy the dwmpanel directory to /usr/bin/
-    if ! sudo cp -r "$CLONE_DIR" "$DEST_DIR"; then
-        print_msg "Failed to copy dwmpanel to $DEST_DIR!" "${RED}"
+    # Check if source binary exists
+    if [ ! -f "$SOURCE_FILE" ]; then
+        print_msg "dwmpanel binary not found in $CLONE_DIR!" "${RED}"
         exit 1
     fi
 
-    print_msg "Successfully copied dwmpanel to $DEST_DIR." "${GREEN}"
+    # Remove the destination file if it already exists
+    if [ -f "$DEST_FILE" ]; then
+        print_msg "Removing existing file $DEST_FILE..." "${YELLOW}"
+        sudo rm -f "$DEST_FILE"
+    fi
+
+    # Copy the dwmpanel binary to /usr/bin/
+    if ! sudo cp "$SOURCE_FILE" "$DEST_FILE"; then
+        print_msg "Failed to copy dwmpanel binary to $DEST_FILE!" "${RED}"
+        exit 1
+    fi
+
+    # Ensure the binary is executable
+    sudo chmod +x "$DEST_FILE"
+
+    print_msg "Successfully copied dwmpanel binary to $DEST_FILE." "${GREEN}"
 }
 
 # Function to prompt for adding dwmpanel to .xinitrc
