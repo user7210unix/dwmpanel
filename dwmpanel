@@ -94,6 +94,9 @@ def get_date_time():
     """
     now = datetime.datetime.now()
     date_str = now.strftime("%a %b %d")  # e.g., "Mon Mar 18"
+    # 12-hour format with AM/PM (commented out)
+    # time_str = now.strftime("%I:%M:%S %p")  # e.g., "04:43:00 PM"
+    # 24-hour format (default)
     time_str = now.strftime("%H:%M:%S")  # e.g., "16:43:00"
     return f"󰥔 {time_str}   {date_str} "
 
