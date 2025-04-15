@@ -107,15 +107,16 @@ def get_battery():
     try:
         battery = psutil.sensors_battery()
         if battery:
-            percent = battery.percent
+            percent = int(battery.percent)  # Convert to integer to keep it short
             if battery.power_plugged:
                 return f"󰂅 {percent}%"
             else:
                 return f"󰁹 {percent}%"
         else:
             return "󰁹 N/A"
-    except:
+    except Exception:
         return "󰁹 N/A"
+
 
 def update_status():
     """
